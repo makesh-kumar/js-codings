@@ -1,0 +1,43 @@
+const obj = {
+  name: "Makesh",
+  printName: function (a, b) {
+    console.log(this.name, a, b);
+  },
+};
+
+Function.prototype.myBind = function (thisArg, ...args1) {
+  const sym = Symbol();
+  thisArg.sym = this;
+  return function (...args2) {
+    const res = thisArg.sym(...args1, ...args2);
+    delete thisArg.sym;
+    return res;
+  };
+};
+
+Function.prototype.myCall = function (thisArg, ...args1) {
+  const sym = Symbol();
+  thisArg.sym = this;
+  thisArg.sym(...args1);
+  delete thisArg.sym;
+};
+
+Function.prototype.myApply = function (thisArg, argsArr) {
+  const sym = Symbol();
+  thisArg.sym = this;
+  thisArg.sym(...argsArr);
+  delete thisArg.sym;
+};
+
+let newObj = { name: "test" };
+
+obj.printName.myBind(newObj, 1)(2);
+obj.printName.bind(newObj, 1)(2);
+
+obj.printName.myCall(newObj, 1, 2);
+obj.printName.call(newObj, 1, 2);
+
+obj.printName.myApply(newObj, [1, 2]);
+obj.printName.apply(newObj, [1, 2]);
+
+console.log(newObj);
